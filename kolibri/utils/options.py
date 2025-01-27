@@ -838,6 +838,7 @@ def _get_validator():
             "url_prefix": url_prefix,
             "bytes": validate_bytes,
             "multiprocess_bool": multiprocess_bool,
+            "storage_option": storage_option,
             "cache_option": cache_option,
             "lazy_import_callback_list": lazy_import_callback_list,
             "csp_source_list": csp_source_list,
