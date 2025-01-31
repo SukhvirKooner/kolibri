@@ -1,11 +1,10 @@
 import csv
 import logging
-import ntpath
-import os
 from collections import OrderedDict
 from functools import partial
 
 from django.conf import settings
+from django.core.files.storage import default_storage
 from django.core.management.base import CommandError
 from django.db.models import OuterRef
 from django.db.models import Subquery
@@ -152,7 +151,7 @@ def translate_labels():
 
 
 def csv_file_generator(facility, filename, overwrite=True):
-    if not overwrite and os.path.exists(filename):
+    if not overwrite and default_storage.exists(filename):
         raise ValueError("{} already exists".format(filename))
     queryset = FacilityUser.objects.filter(facility=facility)
 
@@ -281,7 +280,7 @@ class Command(AsyncCommand):
             if job:
                 job.extra_metadata["overall_error"] = self.overall_error
                 job.extra_metadata["users"] = total_rows
-                job.extra_metadata["filename"] = ntpath.basename(filename)
+                job.extra_metadata["filename"] = filename
                 job.save_meta()
             else:
                 logger.info(
