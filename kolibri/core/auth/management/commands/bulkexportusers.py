@@ -246,8 +246,8 @@ class Command(AsyncCommand):
 
     def get_filename(self, options, facility):
         if options["output_file"] is None:
-            filename = CSV_EXPORT_FILENAMES["user"].format(
-                facility.name, facility.id[:4]
+            filename = default_storage.get_available_name(
+                CSV_EXPORT_FILENAMES["user"].format(facility.name, facility.id[:4])
             )
         else:
             filename = options["output_file"]

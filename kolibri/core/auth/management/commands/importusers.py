@@ -197,8 +197,7 @@ class Command(BaseCommand):
 
         fieldnames = input_fields + tuple(val for val in labels.values())
 
-        csv_file = open_csv_for_reading(options["filepath"])
-        with csv_file as f:
+        with open_csv_for_reading(options["filepath"]) as f:
             header = next(csv.reader(f, strict=True))
             has_header = False
             if all(col in fieldnames for col in header):
@@ -213,8 +212,7 @@ class Command(BaseCommand):
                     "Mix of valid and invalid header labels found in first row"
                 )
 
-        csv_file = open_csv_for_reading(options["filepath"])
-        with csv_file as f:
+        with open_csv_for_reading(options["filepath"]) as f:
             if has_header:
                 reader = csv.DictReader(f, strict=True)
             else:
@@ -222,6 +220,7 @@ class Command(BaseCommand):
             with transaction.atomic():
                 total = 0
                 for row in reader:
+                    # import ipdb;ipdb.set_trace()
                     total += int(
                         create_user(map_input(row), default_facility=default_facility)
                     )
