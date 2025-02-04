@@ -281,6 +281,7 @@ class UserImportCommandTestCase(TestCase):
     def test_import_from_export_missing_headers(self):
         for user in users:
             FacilityUser.objects.create(facility=self.facility, **user)
+
         call_command(
             "exportusers",
             output_file=self.csvfilename,
@@ -291,7 +292,7 @@ class UserImportCommandTestCase(TestCase):
         with open_csv_for_reading(self.csvfilename) as source:
             reader = csv.DictReader(source)
             rows = [row for row in reader]
-        with open_csv_for_writing(self.csvfilename) as result:
+        with open_csv_for_writing("new" + self.csvfilename) as result:
             writer = csv.DictWriter(
                 result,
                 tuple(
@@ -303,8 +304,9 @@ class UserImportCommandTestCase(TestCase):
                 for col in cols_to_remove:
                     del row[col]
                 writer.writerow(row)
+
         FacilityUser.objects.all().delete()
-        call_command("importusers", self.csvfilename)
+        call_command("importusers", "new" + self.csvfilename)
         for user in users:
             user_model = FacilityUser.objects.get(username=user["username"])
             self.assertEqual(user_model.birth_year, user["birth_year"])
@@ -323,7 +325,7 @@ class UserImportCommandTestCase(TestCase):
         with open_csv_for_reading(self.csvfilename) as source:
             reader = csv.DictReader(source)
             rows = [row for row in reader]
-        with open_csv_for_writing(self.csvfilename) as result:
+        with open_csv_for_writing("new" + self.csvfilename) as result:
             writer = csv.DictWriter(
                 result,
                 tuple(
@@ -338,7 +340,7 @@ class UserImportCommandTestCase(TestCase):
                     del row[col]
                 writer.writerow(row)
         FacilityUser.objects.all().delete()
-        call_command("importusers", self.csvfilename)
+        call_command("importusers", "new" + self.csvfilename)
         for user in users:
             user_model = FacilityUser.objects.get(username=user["username"])
             self.assertEqual(user_model.birth_year, user["birth_year"])

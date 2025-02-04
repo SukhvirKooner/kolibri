@@ -220,7 +220,6 @@ class Command(BaseCommand):
             with transaction.atomic():
                 total = 0
                 for row in reader:
-                    # import ipdb;ipdb.set_trace()
                     total += int(
                         create_user(map_input(row), default_facility=default_facility)
                     )
